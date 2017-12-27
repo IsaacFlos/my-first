@@ -2,7 +2,10 @@
   <div id="app">
     <Mheader></Mheader>
     <Tab></Tab>
-    <router-view></router-view>
+    <!-- ESO把这些dom都缓存到内存中 -->
+    <keep-alive>
+      <router-view></router-view>
+    </keep-alive>
   </div>
 </template>
 

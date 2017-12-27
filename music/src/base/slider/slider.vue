@@ -4,7 +4,9 @@
 			<!-- 插槽 -->
 			<slot></slot>
 		</div>
-		<div class="dots"></div>
+		<div class="dots">
+			<span class="dot" v-for="(i,index) in dots" :class="{active: currentPageIndex === index}"></span>
+		</div>
 	</div>
 </template>
 
@@ -14,6 +16,12 @@
 	// 引入处理className的函数
 	import {addClass} from '../../common/js/dom'
 	export default{
+		data(){
+			return {
+				dots: [],
+				currentPageIndex: 0
+			}
+		},
 		// 通过porps向子组件传递
 		props: {
 			// 是否轮播
@@ -36,11 +44,26 @@
 			// 初始化缓冲时间【通常页面刷新17秒一次】
 			setTimeout(() => {
 				this._setSliderWidth()
+				this._initDots()
 				this._initSlider()
+
+				if(this.autoPlay){
+					this._play()
+				}
 			}, 20)
+
+			// 监听机型变化
+			window.addEventListener('resize', () => {
+				if(!this.slider){
+					return
+				}
+				this._setSliderWidth(true)
+				// 当变化是重新计算
+				this.slider.refresh()
+			})
 		},
 		methods: {
-			_setSliderWidth(){
+			_setSliderWidth(isResize){
 				// 获取dom元素用$ref
 				this.children = this.$refs.sliderGroup.children
 
@@ -62,10 +85,13 @@
 				}
 
 				// loop为true的时候，我们需要克隆
-				if(this.loop){
+				if(this.loop && !isResize){
 					width += 2 * sliderWidth
 				}
 				this.$refs.sliderGroup.style.width = width + 'px'
+			},
+			_initDots(){
+				this.dots = new Array(this.children.length)
 			},
 			// 初始化slider
 			_initSlider(){
@@ -76,18 +102,47 @@
 					snap: true,
 					snapLoop: this.loop,	//循环
 					snapThreshold: 0.3,		
-					snapSpeed: 400,
-					click: true
+					snapSpeed: 400
 				})
+
+				// 将currentPageIndex绑定事件
+				this.slider.on('scrollEnd', () => {
+					let pageIndex = this.slider.getCurrentPage().pageX
+					if(this.loop){
+						pageIndex -= 1
+					}
+					this.currentPageIndex = pageIndex
+
+					if(this.autoPlay){
+						clearTimeout(this.timer)
+						this._play()
+					}
+				})
+			},
+			// 自动播放
+			_play(){
+				let pageIndex = this.currentPageIndex + 1
+				if(this.loop){
+					pageIndex += 1
+				}
+				this.timer = setTimeout(() => {
+					// goToPage是batter-scroll组件的函数
+					// goToPage('横向轮播'，'纵向lunbo'，'间隔')
+					this.slider.goToPage(pageIndex, 0, 400)
+				},this.interval)
 			}
+		},
+		// ESO优化：当我们代码中含有计时器的时候，在组件销毁的时候需要清楚计时器
+		destroyed(){
+			clearTimeout(this.timer)
 		}
 	}
 </script>
 <style scoped lang="stylus" rel="stylesheet/stylus">
 	.slider
 		min-height: 1px
+		position: relative
 		.slider-group
-			position: relative
 			overflow: hidden
 			white-space: nowrap
 			.slider-item
@@ -100,16 +155,21 @@
 					width: 100%
 		.dots
 			position: absolute
-			right: 0
-			left: 0
+			right: 40%
 			bottom: 12px
 			text-align: center
 			font-size: 0
 			.dot
-				border-radius: 5px
-				width: 5px
-				height: 5px
+				border-radius: 8px
+				width: 8px
+				height: 8px
 				float: left
 				margin-left: 5px
+				background-color: #ddd
+				&.active
+					width: 15px
+					border-radius: 8px
+					background-color: red
+
 
 </style>
