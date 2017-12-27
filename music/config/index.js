@@ -10,7 +10,16 @@ module.exports = {
     // Paths
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
-    proxyTable: {},
+    proxyTable: {
+        // 开发状态时的跨域方法
+        '/api': {
+            target: 'http://www.weinihaigou.com',
+            changeOrigin: true,
+            pathRewrite: {
+              '^/api': ''
+            }
+        }
+    },
 
     // Various Dev Server settings
     host: 'localhost', // can be overwritten by process.env.HOST

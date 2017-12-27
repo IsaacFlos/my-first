@@ -45,3 +45,30 @@ For a detailed explanation on how things work, check out the [guide](http://vuej
 支撑层：		MVVM框架：Vue.js[2.x]
 		工具支撑：脚手架工具vue-cli、自动化构建工具webpack、代码检查工具eslint（忽略）
 ```
+
+# 知识点：
+
+```bash
+#jsonp
+引入jsonp=>封装jsonp方法=>调用封装的方法
+
+#轮播
+作者自己开发的轮播组件：https://github.com/ustbhuangyi/better-scroll
+使用插槽slot标签=>封装获取className方法=>运用$ref获取dom并为其添加固定style=>使用组件better-scroll
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
