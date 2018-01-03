@@ -12,13 +12,13 @@ module.exports = {
     assetsPublicPath: '/',
     proxyTable: {
         // 开发状态时的跨域方法
-        '/api': {
-            target: 'http://www.weinihaigou.com',
-            changeOrigin: true,
-            pathRewrite: {
-              '^/api': ''
-            }
-        }
+        // '/api': {
+        //     target: 'http://www.weinihaigou.com',
+        //     changeOrigin: true,
+        //     pathRewrite: {
+        //       '^/api': ''
+        //     }
+        // }
     },
 
     // Various Dev Server settings

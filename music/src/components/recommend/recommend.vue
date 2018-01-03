@@ -1,15 +1,15 @@
 <template>
 	<div class="recommend">
 		<div class="recommend-content">
-			<div class="slider-wrapper">
+			<div v-if="recommends.length" class="slider-wrapper">
 				<Slider>
 					<div v-for="i in recommends">
-						<a :href="i.link"><img :src="i.picUrl"></a>
+						<a :href="i.linkUrl"><img :src="i.picUrl"></a>
 					</div>
 				</Slider>
 			</div>
 			<div class="recommend-list">
-				<h1 class="lits-title">热门歌曲推荐</h1>
+				<h1 class="list-title">热门歌曲推荐</h1>
 				<ul></ul>
 			</div>
 		</div>
@@ -17,43 +17,51 @@
 </template>
 <script type="text/javascript">
 	import Slider from 'base/slider/slider'
+	import {getRecommend, getDiscList} from '../../common/api/recommend'
+	import {ERR_OK} from '../../common/api/config'
 	export default{
 		data(){
 			return {
-				recommends: [
-					{id: 1, link: 'http://www.baidu.com', picUrl: 'https://ss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=3105304565,1509611228&fm=27&gp=0.jpg'},
-					{id: 2, link: 'http://www.baidu.com', picUrl: 'https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=227953490,3054069314&fm=27&gp=0.jpg'},
-					{id: 3, link: 'http://www.baidu.com', picUrl: 'https://ss1.bdstatic.com/70cFvXSh_Q1YnxGkpoWK1HF6hhy/it/u=958008776,2557398869&fm=27&gp=0.jpg'},
-					{id: 4, link: 'http://www.baidu.com', picUrl: 'https://ss0.bdstatic.com/70cFvHSh_Q1YnxGkpoWK1HF6hhy/it/u=2097996470,2706206864&fm=27&gp=0.jpg'},
-					{id: 5, link: 'http://www.baidu.com', picUrl: 'https://ss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=194300842,4244067639&fm=27&gp=0.jpg'},
-				]
+				recommends: []
 			}
 		},
 		components: {
 			Slider
 		},
+		created(){
+			this._getRecommend()
+			// this._getDiscList()
+		},
 		methods: {
 			// api
-			demo: function(){
-				this.$http.get('api/indexType.shtml?type=4').then(function(data){
-					var str = data.data;
-					var b = str.toString();
-				    var m = b.match(/<img src=\"([^\"]*?)\">/gi);
-				    console.log(m)
+			_getRecommend(){
+				// promise中的then
+				getRecommend().then((res) => {
+					if(res.code === ERR_OK){
+						// console.log(res.data.slider)
+						this.recommends = res.data.slider
+					}
 				})
-			}
-		},
-		mounted(){
-			this.demo()
+			},
+			// _getDiscList(){
+			// 	getDiscList().then((res) => {
+			// 		if(res.code === ERR_OK){
+			// 			console.log(res)
+			// 		}
+			// 	})
+			// }
 		}
 	}
 </script>
 <style scoped lang="stylus" rel="stylesheet/stylus">
+	@import '../../common/stylus/variable'
 	.recommend
 		width: 100%
 		overflow: hidden
-		.recommend-content
-			.slider-wrapper
-				img
-					height: 200px
+		.recommend-list
+			text-align: center
+			margin-top: 10px
+			.list-title
+				font-size: $font-size-medium-x
+				color: $color-sub-theme
 </style>

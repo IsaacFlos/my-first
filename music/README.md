@@ -50,7 +50,15 @@ For a detailed explanation on how things work, check out the [guide](http://vuej
 
 ```bash
 #jsonp
-引入jsonp=>封装jsonp方法=>调用封装的方法
+原理：动态创建一个script标签【script标签没有同源的限制】，把script标签的src指向请求真实服务端地址，这个服务端地址与我们ajax的服务端地址的不同：这个服务端地址的参数callback(a)，服务端解析url带有callback=a的参数，返回的数据里会调用a去包裹一个方法，前端执行a这个方法【前端是没有a这个方法的】，发送请求之前，需要在window里注册a方法，在服务端返回a这个方法执行的时候，在这个a方法了就可以获取这段数据了。
+jsonp(url, opts, fn)
+url:服务端请求的地址
+opts:[param]:约定的字段
+opts:[timeout]:超时的时间默认1min
+opts:[perfix]:
+opts:[name]:
+fn:callback
+引入jsonp=>封装jsonp方法jsonp(url, data, option)【将链接中固定的参数拼接好】=>调用封装的方法
 
 #轮播
 作者自己开发的轮播组件：https://github.com/ustbhuangyi/better-scroll
@@ -62,6 +70,14 @@ For a detailed explanation on how things work, check out the [guide](http://vuej
 #stylus的使用
 
 #跨域问题【待解决】【已解决】【开发所用】
+/music/config/index.js
+'/api': {
+    target: 'http://www.weinihaigou.com',
+    changeOrigin: true,
+    pathRewrite: {
+      '^/api': ''
+    }
+}
 
 #slot标签  插槽
 
@@ -75,6 +91,22 @@ For a detailed explanation on how things work, check out the [guide](http://vuej
 #promise
 new Promise( function(resolve, reject) {...} /* executor */  );
 
+#v-html具有转译的作用
+
+#vue提供的修饰符
+@touchmove.stop.prevent="onShortcutTouchMove"防止冒泡/浏览器的原生滚动
+
+#forEach
+list.forEach((item, index) => {
+	item
+	index
+})
+
+#子路由配置以及转动画实现
+在components下创建vue组件->在/router/index.js中配置子路由->在listview组件创建点击事件并派发给singer组件this.$emit('select', item)
+
+#vuex
+
 #优化
 1:选项卡
 每次切换选项卡时都会重新请求一次，在router-view标签外加一个keep-alive标签，把他们的dom都缓存到内存中
@@ -86,6 +118,16 @@ new Promise( function(resolve, reject) {...} /* executor */  );
 destroyed(){
 	clearTimeout(this.timer)
 }
+3:懒加载
+第三方组件vue-lazyload
+命令：v-lazy
+4:代码书写规范
+【封装方法】多处用到的封装起来再调用此方法export、export default
+5:better-scroll的用法
+在页面中数据重新渲染完成之前或bom变化场景的，需要调用better-scroll中的refresh方法
+6:fastclick与better-scroll冲突导致点击无效时class="needsclick"
+7：loading加载
+v-show="!descList.length"
 ```
 
 
