@@ -60,15 +60,6 @@ opts:[name]:
 fn:callback
 引入jsonp=>封装jsonp方法jsonp(url, data, option)【将链接中固定的参数拼接好】=>调用封装的方法
 
-#轮播
-作者自己开发的轮播组件：https://github.com/ustbhuangyi/better-scroll
-使用插槽slot标签=>封装获取className方法=>运用$ref获取dom并为其添加固定style=>使用组件better-scroll=>监听窗口变化bug
-
-#选项卡切换的active效果【待解决】
-当 <router-link> 对应的路由匹配成功，将自动设置 class 属性值 .router-link-active，所以你只需要在自己的STYLE文件中，写了.router-link-active的样式，列表选中后，系统就会自动去绑定这个样式
-
-#stylus的使用
-
 #跨域问题【待解决】【已解决】【开发所用】
 /music/config/index.js
 '/api': {
@@ -78,6 +69,15 @@ fn:callback
       '^/api': ''
     }
 }
+
+#轮播
+作者自己开发的轮播组件：https://github.com/ustbhuangyi/better-scroll
+使用插槽slot标签=>封装获取className方法=>运用$ref获取dom并为其添加固定style=>使用组件better-scroll=>监听窗口变化bug
+
+#选项卡切换的active效果【待解决】
+当 <router-link> 对应的路由匹配成功，将自动设置 class 属性值 .router-link-active，所以你只需要在自己的STYLE文件中，写了.router-link-active的样式，列表选中后，系统就会自动去绑定这个样式
+
+#stylus的使用
 
 #slot标签  插槽
 
@@ -103,9 +103,38 @@ list.forEach((item, index) => {
 })
 
 #子路由配置以及转动画实现
-在components下创建vue组件->在/router/index.js中配置子路由->在listview组件创建点击事件并派发给singer组件this.$emit('select', item)
+创建子路由组件并引入-》设置/router/index.js路由-》在v-for子组件通过this.$emit('派发事件名称','参数i')派发事件(item)给父组件／在v-for创建点击事件(item)-》接受子组件派发的事件并触发事件(实例)／demo(实例){this.$router.push({path:`/实例/${实例.id}`})}
+
+#transition
+vue过渡效果
 
 #vuex
+/src/main.js 					//引入vuex
+/src/store/index.js 			//配置state、mutations、getters、actions等
+/src/store/state.js 			//export default
+/src/store/mutation-types.js 	//export
+/src/store/mutations.js 		//export default
+/src/store/getters.js 			//export
+/src/store/actions.js 			//export
+
+主组件:通过mutations将需要传输的变量传输给vuex的state
+import {mapMutations} from 'vuex'
+methods: {
+	...mapMutations({
+		setSanger: 'SET_SANGER'		//mutations-types.js
+	})
+}
+跳转的组件：通过getters将state映射到相应的组件中
+import {mapGetters} from 'vuex'
+computed: {
+	...mapGetters([
+		'singer'	//state
+	])
+},
+created() {
+	console.log(this.singer)
+}
+
 
 #优化
 1:选项卡

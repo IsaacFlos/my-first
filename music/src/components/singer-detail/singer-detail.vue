@@ -5,6 +5,8 @@
 </template>
 <script type="text/javascript">
 	import {mapGetters} from 'vuex'
+	import {getSingerDetail} from '../../common/api/sunger'
+	import {ERR_OK} from '../../common/api/config'
 	export default {
 		computed: {
 			...mapGetters([
@@ -12,7 +14,22 @@
 			])
 		},
 		created() {
+			this._getDetail()
 			console.log(this.singer)
+		},
+		methods: {
+			_getDetail() {
+				// 如果获取不到歌手id，就将页面的链接跳转回/singer
+				if(!this.singer.id){
+					this.$router.push('/singer')
+					return
+				}
+				getSingerDetail(this.singer.id).then((res) => {
+					if(res.code == ERR_OK){
+						console.log(res.data.list)
+					}
+				})
+			}
 		}
 	}
 </script>

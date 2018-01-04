@@ -24,6 +24,7 @@
 			this._getSingerList()
 		},
 		methods: {
+			// 这里的singer随便填写，是通过singer-listview里v-for里的item传输过来的参数
 			selectSinger(singer) {
 				this.$router.push({
 					path: `/singer/${singer.id}`
@@ -36,7 +37,7 @@
 					if(res.code === ERR_OK){
 						var f_data = this._normalizeSinger(res.data.list)
 						this.singers = f_data
-						console.log(this.singers)
+						// console.log(this.singers)
 					}
 				})
 			},
