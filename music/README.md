@@ -70,9 +70,32 @@ fn:callback
     }
 }
 
-#轮播
+#better-scroll
 作者自己开发的轮播组件：https://github.com/ustbhuangyi/better-scroll
+1:轮播
 使用插槽slot标签=>封装获取className方法=>运用$ref获取dom并为其添加固定style=>使用组件better-scroll=>监听窗口变化bug
+2:页面的拖动
+<div class="singer">
+	<Scroll :data="singers" class="singerList">
+		<ul>
+			<li v-for="item in singers">{{item.id}}</li>
+		</ul>
+	</Scroll>
+</div>
+<style type="text/css">
+	/*需要在scroll外层包裹div并使其脱离文本流*/
+	.singer{
+		position: fixed;
+		width: 100%;
+		top: 100px;
+		bottom: 0;
+	}
+	/*scroll本身设置高度100%，超出隐藏*/
+	.singerList{
+		height: 100%;
+		overflow: hidden;
+	}
+</style>
 
 #选项卡切换的active效果【待解决】
 当 <router-link> 对应的路由匹配成功，将自动设置 class 属性值 .router-link-active，所以你只需要在自己的STYLE文件中，写了.router-link-active的样式，列表选中后，系统就会自动去绑定这个样式
@@ -117,24 +140,14 @@ vue过渡效果
 /src/store/getters.js 			//export
 /src/store/actions.js 			//export
 
-主组件:通过mutations将需要传输的变量传输给vuex的state
-import {mapMutations} from 'vuex'
-methods: {
-	...mapMutations({
-		setSanger: 'SET_SANGER'		//mutations-types.js
-	})
-}
-跳转的组件：通过getters将state映射到相应的组件中
-import {mapGetters} from 'vuex'
-computed: {
-	...mapGetters([
-		'singer'	//state
-	])
-},
-created() {
-	console.log(this.singer)
-}
+	   mutation[mutation-types]传入					  getters
+Model------------------------------->state[初始状态]------------View 		[同时操作多个mutation，用action]
+	   action[mutation-types]传入						映射
 
+#e.target
+this和event.target的区别：
+js中事件是会冒泡的，所以this是可以变化的，但event.target不会变化，它永远是直接接受事件的目标DOM元素；
+e.touches[0]	手指触摸的位置
 
 #优化
 1:选项卡
@@ -157,6 +170,34 @@ destroyed(){
 6:fastclick与better-scroll冲突导致点击无效时class="needsclick"
 7：loading加载
 v-show="!descList.length"
+8:节流函数
+搜索页面每输入一次，都会发送一次请求，这样会浪费很多流量！
+// 函数节流
+export function debounce(func, delay) {
+  let timer
+
+  return function(...args) {
+    if (timer) {
+      clearTimeout(timer)
+    }
+    timer = setTimeout(() => {
+      func.apply(this, args)
+    }, delay)
+  }
+}
+9:移动端滚动过程中，键盘不会收起
+input.blur()
+10:Mixins
+11:路由懒加载【异步加载】
+import Index from '@/components/index/index'
+替换为
+const Index  = (resolve) => {
+	import('@/components/index/index').then((module) => {
+		resolve(module)
+	})
+}
+12:vConsole
+13:Charles
 ```
 
 

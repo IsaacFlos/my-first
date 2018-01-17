@@ -1,6 +1,6 @@
 <template>
-	<div class="singer">
-		<Listview @select="selectSinger" :data="singers"></Listview>
+	<div class="singer" ref="singer">
+		<Listview @select="selectSinger" :data="singers" ref="list"></Listview>
 		<router-view></router-view>
 	</div>
 </template>
@@ -10,11 +10,13 @@
 	import Singer from '../../common/js/singer'
 	import Listview from '../../base/listview/listview'
 	import {mapMutations} from 'vuex'
+	import {playlistMixin} from '../../common/js/mixin'
 
 	const HOT_NAME = '热门'
 	const HOT_SINGER_LIN = 10
 
 	export default{
+		mixins: [playlistMixin],
 		data(){
 			return {
 				singers: []
@@ -24,6 +26,12 @@
 			this._getSingerList()
 		},
 		methods: {
+			// singer
+			handlePlaylist(playlist){
+				// const bottom = playlist.length > 0 ? '60px' : ''
+				// this.$refs.singer.$el.style.bottom = bottom
+				// this.$refs.list.refresh()
+			},
 			// 这里的singer随便填写，是通过singer-listview里v-for里的item传输过来的参数
 			selectSinger(singer) {
 				this.$router.push({

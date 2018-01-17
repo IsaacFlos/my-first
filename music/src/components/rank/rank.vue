@@ -1,37 +1,105 @@
 <template>
-	<div class="rank" rel="aaa">
-		<ul ref="bbb">
-			<li v-for="(i,index) in ranks" :tag="index">{{i.id}}</li>
-		</ul>
+	<div class="rank" ref="rank">
+		<scroll :data="topList" class="toplist" ref="toplist">
+			<ul>
+				<li class="item" v-for="item in topList" @click="selectItem(item)">
+					<div class="icon">
+						<img width="100" height="100" v-lazy="item.picUrl">
+					</div>
+					<ul class="songlist">
+						<li class="song" v-for="(song, index) in item.songList">
+							<span>{{index + 1}}</span>
+							<span>{{song.songname}}-{{song.singername}}</span>
+						</li>
+					</ul>
+				</li>
+			</ul>
+		</scroll>
+		<router-view></router-view>
 	</div>
 </template>
 <script type="text/javascript">
-	import {getData,setData} from '../../common/js/dom'
+	import Scroll from '../../base/scroll/scroll'
+	import {getTopList} from '../../common/api/rank'
+	import {ERR_OK} from '../../common/api/config'
+	import {playlistMixin} from '../../common/js/mixin'
+	import {mapMutations} from 'vuex'
+
 	export default{
-		data(){
-			return{
-				ranks: [
-					{id: 1},
-					{id: 2},
-					{id: 3},
-					{id: 4},
-					{id: 5},
-				]
+		mixins: [playlistMixin],
+		created() {
+			this._getTopList()
+		},
+		data() {
+			return {
+				topList: []
 			}
 		},
 		methods: {
-			// test(){
-			// 	let demo = setData(this.$refs.bbb.children[0],'an','1')
-			// 	console.log(demo)
-			// },
-			test1(){
-				let demo = getData(this.$refs.bbb.children[1], 'tag')
-				console.log(demo)
-			}
+			_getTopList() {
+				getTopList().then((res) => {
+					if(res.code == ERR_OK) {
+						// console.log(res.data.topList)
+						this.topList = res.data.topList
+					}
+				})
+			},
+			handlePlaylist(playlist) {
+				const bottom = playlist.length ? '60px' : ''
+				this.$refs.rank.style.bottom = bottom
+				this.$refs.toplist.refresh()
+			},
+			selectItem(item) {
+				this.$router.push({
+					path: `/rank/${item.id}`
+				})
+				this.setTopList(item)
+			},
+			...mapMutations({
+				setTopList: 'SET_TOP_LIST'
+			})
 		},
-		mounted(){
-			this.test1()
-			// console.log(this.$refs.bbb.children[0])
+		mounted() {
+			console.log('Hello World')
+		},
+		components: {
+			Scroll
 		}
 	}
 </script>
+<style scoped lang="stylus" rel="stylesheet/stylus">
+	@import "../../common/stylus/variable"
+
+	.rank
+		position: fixed
+		width: 100%
+		top: 88px
+		bottom: 0
+		.toplist
+			height: 100%
+			overflow: hidden
+			.item
+				display: flex
+				margin: 0 20px
+				padding-top: 20px
+				height: 100px
+				&:last-child
+					padding-bottom: 20px
+				.icon
+					flex: 0 0 100px
+					width: 100px
+					height: 100px
+				.songlist
+					flex: 1
+					display: flex
+					flex-direction: column
+					justify-content: center
+					padding: 0 20px
+					height: 100px
+					overflow: hidden
+					background-color: $color-dialog-background
+					.song
+						color: $color-text-d
+						line-height: 30px
+						font-size: $font-size-medium
+</style>

@@ -1,5 +1,5 @@
 <template>
-	<Scroll class="listview" 
+	<scroll class="listview" 
 			:data="data" 
 			ref="listview"
 			:listenScroll="listenScroll"
@@ -34,7 +34,7 @@
 		<div v-show="!data.length" class="loading-container">
 			<Loading></Loading>
 		</div>
-	</Scroll>
+	</scroll>
 </template>
 <script type="text/javascript">
 	import Scroll from '../scroll/scroll'
@@ -108,6 +108,9 @@
 				// better-scroll
 				// this.$refs.listview.scrollToElement(this.$refs.listGroup[anchorIndex], 0)
 				this._scrollTo(anchorIndex)
+			},
+			refresh() {
+				this.$refs.listview.refresh()
 			},
 			scroll(pos) {
 				this.scrollY = pos.y

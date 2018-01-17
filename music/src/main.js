@@ -5,6 +5,9 @@ import store from './store'
 import VueResource from 'vue-resource'
 import './common/stylus/index.styl'
 import VueLazyLoad from 'vue-lazyload'
+import vConsole from 'vconsole'
+
+// console.log('hello world')
 
 Vue.use(VueResource)
 Vue.use(VueLazyLoad, {
